@@ -3,6 +3,7 @@
 import cv2 as cv
 import numpy as np
 import matplotlib.pyplot as plt
+import os
 
 def imshow(bgr_img, title = None):
     # change color order, form bgr ot rgb
@@ -31,7 +32,7 @@ def histPlot(bgr_img, title = None):
         plt.title(title)
 
 
-img = cv.imread('dataset\\image1.jpg')
+img = cv.imread(os.path.join('dataset', 'image1.jpg'))
 
 
 # original image and histogram
