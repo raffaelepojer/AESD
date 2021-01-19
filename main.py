@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import cv2 as cv
+import numpy as np
 import matplotlib.pyplot as plt
 
 def imshow(bgr_img, title = None):
@@ -8,7 +9,7 @@ def imshow(bgr_img, title = None):
     # so that matplotlib displays the image correctly
     # this is required because OpenCV uses BGR by default
     # while matplotlib uses RGB
-    plt.imshow(img[...,::-1])
+    plt.imshow(bgr_img[...,::-1])
     
     if title is not None:
         plt.title(title)
@@ -33,18 +34,20 @@ for i,col in enumerate(color):
 
 
 # histogram equalization to improve constrast
-img[:,:,0] = cv.equalizeHist(img[:,:,0])
-img[:,:,1] = cv.equalizeHist(img[:,:,1])
-img[:,:,2] = cv.equalizeHist(img[:,:,2])
+equ1 = np.zeros(img.shape, dtype=np.uint8)
+
+equ1[:,:,0] = cv.equalizeHist(img[:,:,0])
+equ1[:,:,1] = cv.equalizeHist(img[:,:,1])
+equ1[:,:,2] = cv.equalizeHist(img[:,:,2])
 
 plt.subplot(223)
-imshow(img, 'Equalized image')
+imshow(equ1, 'Equalized image')
 
 plt.subplot(224)
 plt.title('Equalized histogram')
 
 for i,col in enumerate(color):
-    histr = cv.calcHist([img],[i],None,[256],[0,256])
+    histr = cv.calcHist([equ1],[i],None,[256],[0,256])
     plt.plot(histr,color = col)
     plt.xlim([0,256])
     
