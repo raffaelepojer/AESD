@@ -17,6 +17,20 @@ def imshow(bgr_img, title = None):
     plt.axis('off')
 
 
+def histPlot(bgr_img, title = None):
+    # compute and plot histogram
+
+    color = ('b','g','r')
+
+    for i,col in enumerate(color):
+        histr = cv.calcHist([bgr_img],[i],None,[256],[0,256])
+        plt.plot(histr,color = col)
+        plt.xlim([0,256])
+    
+    if title is not None:
+        plt.title(title)
+
+
 img = cv.imread('dataset\\image1.jpg')
 
 
@@ -25,12 +39,7 @@ plt.subplot(321)
 imshow(img, 'Original image')
 
 plt.subplot(322)
-plt.title('Original histogram')
-color = ('b','g','r')
-for i,col in enumerate(color):
-    histr = cv.calcHist([img],[i],None,[256],[0,256])
-    plt.plot(histr,color = col)
-    plt.xlim([0,256])
+histPlot(img, 'Original histogram')
 
 
 # histogram equalization to improve constrast
@@ -44,12 +53,7 @@ plt.subplot(323)
 imshow(equ1, 'Equalized image')
 
 plt.subplot(324)
-plt.title('Equalized histogram')
-
-for i,col in enumerate(color):
-    histr = cv.calcHist([equ1],[i],None,[256],[0,256])
-    plt.plot(histr,color = col)
-    plt.xlim([0,256])
+histPlot(equ1, 'Equalized histogram')
     
 
 # adaptive histogram equalization using CLAHE algorithm
@@ -65,12 +69,7 @@ plt.subplot(325)
 imshow(equ2, 'Equalized image (adaptive)')
 
 plt.subplot(326)
-plt.title('Equalized histogram (adaptive)')
-
-for i,col in enumerate(color):
-    histr = cv.calcHist([equ2],[i],None,[256],[0,256])
-    plt.plot(histr,color = col)
-    plt.xlim([0,256])
+histPlot(equ2, 'Equalized histogram (adaptive)')
 
 
 plt.show()
