@@ -32,7 +32,7 @@ def histPlot(bgr_img, title = None):
         plt.title(title)
 
 
-img = cv.imread(os.path.join('dataset', 'image1.jpg'))
+img = cv.imread(os.path.join('dataset', 'image2.jpg'))
 
 fig, ax = plt.subplots(3, 2)
 fig.tight_layout(h_pad=2)
