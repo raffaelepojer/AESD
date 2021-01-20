@@ -36,11 +36,11 @@ img = cv.imread(os.path.join('dataset', 'image2.jpg'))
 
 
 # histogram equalization to improve contrast
-# equ1 = np.zeros(img.shape, dtype=np.uint8)
+equ1 = np.zeros(img.shape, dtype=np.uint8)
 
-# equ1[:,:,0] = cv.equalizeHist(img[:,:,0])
-# equ1[:,:,1] = cv.equalizeHist(img[:,:,1])
-# equ1[:,:,2] = cv.equalizeHist(img[:,:,2])
+equ1[:,:,0] = cv.equalizeHist(img[:,:,0])
+equ1[:,:,1] = cv.equalizeHist(img[:,:,1])
+equ1[:,:,2] = cv.equalizeHist(img[:,:,2])
     
 
 # adaptive histogram equalization using CLAHE algorithm
@@ -58,4 +58,25 @@ plt.subplot(plot_dim+1)
 imshow(img, 'Original image')
 plt.subplot(plot_dim+2)
 imshow(equ2, 'Adaptive histogram equalization')
-plt.show()
+# plt.show()
+
+
+# conversion to HSV
+hsv = cv.cvtColor(equ2, cv.COLOR_BGR2HSV)
+
+# color thresholding
+
+# range of green in the dataset
+lower_green = np.array([56,0,0])
+upper_green = np.array([96, 255,100])
+
+# Threshold the HSV image
+mask = cv.inRange(hsv, lower_green, upper_green)
+
+# Bitwise-AND mask and original image
+res = cv.bitwise_and(img,img, mask= mask)
+
+
+cv.imshow('res',res)
+k = cv.waitKey(0)
+cv.destroyAllWindows()
