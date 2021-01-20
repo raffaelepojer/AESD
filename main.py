@@ -34,6 +34,8 @@ def histPlot(bgr_img, title = None):
 
 img = cv.imread(os.path.join('dataset', 'image1.jpg'))
 
+fig, ax = plt.subplots(3, 2)
+fig.tight_layout(h_pad=2)
 
 # original image and histogram
 plt.subplot(321)
@@ -43,7 +45,7 @@ plt.subplot(322)
 histPlot(img, 'Original histogram')
 
 
-# histogram equalization to improve constrast
+# histogram equalization to improve contrast
 equ1 = np.zeros(img.shape, dtype=np.uint8)
 
 equ1[:,:,0] = cv.equalizeHist(img[:,:,0])
