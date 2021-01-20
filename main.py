@@ -32,7 +32,7 @@ def histPlot(bgr_img, title = None):
         plt.title(title)
 
 
-img = cv.imread(os.path.join('dataset', 'image2.jpg'))
+img = cv.imread(os.path.join('dataset', 'raffaele', 'image16.jpg'))
 
 
 # histogram equalization to improve contrast
@@ -67,8 +67,8 @@ hsv = cv.cvtColor(equ2, cv.COLOR_BGR2HSV)
 # color thresholding
 
 # range of green in the dataset
-lower_green = np.array([56,0,0])
-upper_green = np.array([96, 255,100])
+lower_green = np.array([34,23,0])
+upper_green = np.array([98, 255,160])
 
 # Threshold the HSV image
 mask = cv.inRange(hsv, lower_green, upper_green)
