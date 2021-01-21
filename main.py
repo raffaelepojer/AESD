@@ -32,7 +32,7 @@ def histPlot(bgr_img, title = None):
         plt.title(title)
 
 
-img = cv.imread(os.path.join('dataset', 'image16.jpg'))
+img = cv.imread(os.path.join('dataset', 'image17.jpg'))
 
 
 # histogram equalization to improve contrast
@@ -83,5 +83,13 @@ masked = cv.bitwise_and(img, img, mask= mask)
 
 
 edges = cv.Canny(masked, 100, 200)
-plt.imshow(edges, cmap='gray')
+
+
+contours, hierarchy = cv.findContours(edges, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
+
+vis = img.copy()
+cv.drawContours(vis, contours, -1, (0,255,0), 1)
+imshow(vis)
+
 plt.show()
+
