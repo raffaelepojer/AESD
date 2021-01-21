@@ -32,7 +32,7 @@ def histPlot(bgr_img, title = None):
         plt.title(title)
 
 
-img = cv.imread(os.path.join('dataset', 'image6.jpg'))
+img = cv.imread(os.path.join('dataset', 'image16.jpg'))
 
 
 # histogram equalization to improve contrast
@@ -79,8 +79,9 @@ upper_green = np.array([98, 255,160])
 mask = cv.inRange(hsv, lower_green, upper_green)
 
 # Bitwise-AND mask and original image
-masked = cv.bitwise_and(hsv,hsv, mask= mask)
+masked = cv.bitwise_and(img, img, mask= mask)
 
 
-imshow(masked)
+edges = cv.Canny(masked, 100, 200)
+plt.imshow(edges, cmap='gray')
 plt.show()
