@@ -32,7 +32,7 @@ def histPlot(bgr_img, title = None):
         plt.title(title)
 
 
-img = cv.imread(os.path.join('dataset', 'raffaele', 'image16.jpg'))
+img = cv.imread(os.path.join('dataset', 'image6.jpg'))
 
 
 # histogram equalization to improve contrast
@@ -53,11 +53,11 @@ equ2[:,:,1] = clahe.apply(img[:,:,1])
 equ2[:,:,2] = clahe.apply(img[:,:,2])
 
 
-plot_dim = 210
-plt.subplot(plot_dim+1)
-imshow(img, 'Original image')
-plt.subplot(plot_dim+2)
-imshow(equ2, 'Adaptive histogram equalization')
+# plot_dim = 210
+# plt.subplot(plot_dim+1)
+# imshow(img, 'Original image')
+# plt.subplot(plot_dim+2)
+# imshow(equ2, 'Adaptive histogram equalization')
 # plt.show()
 
 
@@ -70,13 +70,17 @@ hsv = cv.cvtColor(equ2, cv.COLOR_BGR2HSV)
 lower_green = np.array([34,23,0])
 upper_green = np.array([98, 255,160])
 
+# Possible alternative mask, more strict
+# we lose details but we have a bit less noise
+# lower_green2 = np.array([48,23,0])
+# upper_green2= np.array([89, 255,160])
+
 # Threshold the HSV image
 mask = cv.inRange(hsv, lower_green, upper_green)
 
 # Bitwise-AND mask and original image
-res = cv.bitwise_and(img,img, mask= mask)
+masked = cv.bitwise_and(hsv,hsv, mask= mask)
 
 
-cv.imshow('res',res)
-k = cv.waitKey(0)
-cv.destroyAllWindows()
+imshow(masked)
+plt.show()
