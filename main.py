@@ -4,6 +4,8 @@ import cv2 as cv
 import numpy as np
 import matplotlib.pyplot as plt
 import os
+import detect as det
+# import imutils # keeps the aspect ratio
 
 def imshow(bgr_img, title = None):
     # change color order, form bgr ot rgb
@@ -31,9 +33,7 @@ def histPlot(bgr_img, title = None):
     if title is not None:
         plt.title(title)
 
-
-img = cv.imread(os.path.join('dataset', 'raffaele', 'image16.jpg'))
-
+img = cv.imread(os.path.join('dataset', 'image16.jpg'), cv.IMREAD_COLOR)
 
 # histogram equalization to improve contrast
 equ1 = np.zeros(img.shape, dtype=np.uint8)
@@ -76,7 +76,16 @@ mask = cv.inRange(hsv, lower_green, upper_green)
 # Bitwise-AND mask and original image
 res = cv.bitwise_and(img,img, mask= mask)
 
+img2 = cv.imread(os.path.join('dataset', 'template', 'image5-cropped.jpg'), cv.IMREAD_COLOR)
+img_gray = cv.cvtColor(img2, cv.COLOR_BGR2GRAY)
+imgcopy = img2.copy()
 
-cv.imshow('res',res)
-k = cv.waitKey(0)
-cv.destroyAllWindows()
+# draw the rectangle of the template found
+(startX, startY, endX, endY) = det.findArrow(img2)
+cv.rectangle(img2, (startX, startY), (endX, endY), (0, 0, 255), 2)
+cv.imshow("Image", img2)
+cv.waitKey(0)
+
+# cv.imshow('res',res)
+# k = cv.waitKey(0)
+# cv.destroyAllWindows()
