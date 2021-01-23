@@ -32,7 +32,7 @@ def histPlot(bgr_img, title = None):
         plt.title(title)
 
 
-img = cv.imread(os.path.join('dataset', 'image17.jpg'))
+img = cv.imread(os.path.join('dataset', 'image8.jpg'))
 
 
 # histogram equalization to improve contrast
@@ -87,9 +87,25 @@ edges = cv.Canny(masked, 100, 200)
 
 contours, hierarchy = cv.findContours(edges, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
 
-vis = img.copy()
-cv.drawContours(vis, contours, -1, (0,255,0), 1)
-imshow(vis)
+# vis = img.copy()
+# hulls = [cv.convexHull(c) for c in contours]
+# cv.drawContours(vis, contours, -1, (0,255,0), 1)
+# imshow(vis)
+
+
+# for i, cnt in enumerate(contours):
+#     epsilon = 0.001*cv.arcLength(cnt,True)
+#     contours[i] = cv.approxPolyDP(cnt,epsilon,True)
+
+# vis = img.copy()
+# cv.drawContours(vis, contours, -1, (0,255,0), 1)
+# imshow(vis)
+
+
+# use hulls to capture bad color-thresholded signs
+# use minimum enclosing box, which should work even if warped perspective
+# filter by area, keep the biggest box?
+# or filter by edges, searching for squares (4 edges)
 
 plt.show()
 
