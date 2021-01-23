@@ -32,7 +32,7 @@ def histPlot(bgr_img, title = None):
         plt.title(title)
 
 
-img = cv.imread(os.path.join('dataset', 'image8.jpg'))
+img = cv.imread(os.path.join('dataset', 'image17.jpg'))
 
 
 # histogram equalization to improve contrast
@@ -67,13 +67,10 @@ hsv = cv.cvtColor(equ2, cv.COLOR_BGR2HSV)
 # color thresholding
 
 # range of green in the dataset
-lower_green = np.array([34,23,0])
-upper_green = np.array([98, 255,160])
+# use 60, ... in lower for stricter bound
+lower_green = np.array([24,40,0])
+upper_green = np.array([95, 255,255])
 
-# Possible alternative mask, more strict
-# we lose details but we have a bit less noise
-# lower_green2 = np.array([48,23,0])
-# upper_green2= np.array([89, 255,160])
 
 # Threshold the HSV image
 mask = cv.inRange(hsv, lower_green, upper_green)
@@ -87,10 +84,10 @@ edges = cv.Canny(masked, 100, 200)
 
 contours, hierarchy = cv.findContours(edges, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
 
-# vis = img.copy()
+vis = img.copy()
 # hulls = [cv.convexHull(c) for c in contours]
-# cv.drawContours(vis, contours, -1, (0,255,0), 1)
-# imshow(vis)
+cv.drawContours(vis, contours, -1, (0,255,0), 1)
+imshow(vis)
 
 
 # for i, cnt in enumerate(contours):
