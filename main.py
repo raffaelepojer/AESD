@@ -76,15 +76,16 @@ mask = cv.inRange(hsv, lower_green, upper_green)
 # Bitwise-AND mask and original image
 res = cv.bitwise_and(img,img, mask= mask)
 
-img2 = cv.imread(os.path.join('dataset', 'template', 'image5-cropped.jpg'), cv.IMREAD_COLOR)
+img2 = cv.imread(os.path.join('dataset', 'template', 'left.jpg'), cv.IMREAD_COLOR)
 img_gray = cv.cvtColor(img2, cv.COLOR_BGR2GRAY)
 imgcopy = img2.copy()
 
 # draw the rectangle of the template found
-(startX, startY, endX, endY) = det.findArrow(img2)
-if startX == startY == endX == endY == 0:
+(startX, startY, endX, endY, found) = det.findArrow(img2)
+if found == "NO_ARROW":
     print("Nothing")
 else:
+    print("Found ", found, " at x: ", startX, " y: ", startY)
     cv.rectangle(img2, (startX, startY), (endX, endY), (0, 0, 255), 2)
     cv.imshow("Image", img2)
     cv.waitKey(0)
