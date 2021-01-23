@@ -78,6 +78,7 @@ while(1):
         pvMax = vMax
 
     # Display output image
+    output = cv2.resize(output, (560, 750))
     cv2.imshow('image',output)
 
     # Wait longer to prevent freeze for videos.
