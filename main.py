@@ -82,9 +82,12 @@ imgcopy = img2.copy()
 
 # draw the rectangle of the template found
 (startX, startY, endX, endY) = det.findArrow(img2)
-cv.rectangle(img2, (startX, startY), (endX, endY), (0, 0, 255), 2)
-cv.imshow("Image", img2)
-cv.waitKey(0)
+if startX == startY == endX == endY == 0:
+    print("Nothing")
+else:
+    cv.rectangle(img2, (startX, startY), (endX, endY), (0, 0, 255), 2)
+    cv.imshow("Image", img2)
+    cv.waitKey(0)
 
 # cv.imshow('res',res)
 # k = cv.waitKey(0)

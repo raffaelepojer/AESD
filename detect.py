@@ -19,6 +19,9 @@ def findArrow(target):
     foundL = None
     maxLoc = None
     r = None
+    res = None
+
+    method = cv.TM_CCOEFF_NORMED
 
     for scale in np.linspace(0.2, 1.0, 20)[::-1]:
         dim = (int(img_gray.shape[1] * scale), int(img_gray.shape[0] * scale))
@@ -30,12 +33,12 @@ def findArrow(target):
             break
 
         edged = cv.Canny(resized, 50, 200)
-        resultR = cv.matchTemplate(edged, templateR, cv.TM_CCOEFF) # TM_CCOEFF is the best ?? 
-        resultL = cv.matchTemplate(edged, templateL, cv.TM_CCOEFF)
+        resultR = cv.matchTemplate(edged, templateR, method) 
+        resultL = cv.matchTemplate(edged, templateL, method)
 
-        (_, maxValR, _, maxLocR) = cv.minMaxLoc(resultR)
-        (_, maxValL, _, maxLocL) = cv.minMaxLoc(resultL)
-		
+        (minValR, maxValR, minLocR, maxLocR) = cv.minMaxLoc(resultR)
+        (minValL, maxValL, minLocL, maxLocL) = cv.minMaxLoc(resultL)
+	
         if foundR is None or maxValR > foundR[0]:
             foundR = (maxValR, maxLocR, r)
         if foundL is None or maxValL > foundL[0]:
@@ -43,9 +46,16 @@ def findArrow(target):
         
         if maxValL >= maxValR:
             (_, maxLoc, r) = foundL
+            res = resultL
         else:
             (_, maxLoc, r) = foundR
+            res = resultR
 
-    (startX, startY) = (int(maxLoc[0] * r), int(maxLoc[1] * r))
-    (endX, endY) = (int((maxLoc[0] + tW) * r), int((maxLoc[1] + tH) * r))
-    return (startX, startY, endX, endY)
+    threshold = 0.8
+    if np.amax(res) > threshold:
+        (startX, startY) = (int(maxLoc[0] * r), int(maxLoc[1] * r))
+        (endX, endY) = (int((maxLoc[0] + tW) * r), int((maxLoc[1] + tH) * r))
+        return (startX, startY, endX, endY)
+    else:
+        print("No arrow found")
+        return (0, 0, 0, 0)
