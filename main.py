@@ -76,19 +76,28 @@ mask = cv.inRange(hsv, lower_green, upper_green)
 # Bitwise-AND mask and original image
 res = cv.bitwise_and(img,img, mask= mask)
 
-img2 = cv.imread(os.path.join('dataset', 'template', 'left.jpg'), cv.IMREAD_COLOR)
+img2 = cv.imread(os.path.join('dataset', 'template', 'image5-cropped.jpg'), cv.IMREAD_COLOR)
 img_gray = cv.cvtColor(img2, cv.COLOR_BGR2GRAY)
 imgcopy = img2.copy()
 
 # draw the rectangle of the template found
-(startX, startY, endX, endY, found) = det.findArrow(img2)
-if found == "NO_ARROW":
-    print("Nothing")
+arr = (startXa, startYa, endXa, endYa, foundA) = det.findArrow(img2)
+door = (startXd, startYd, endXd, endYd, foundD) = det.findDoor(img2)
+
+if foundA == "NO_ARROW":
+    print("No arrow found")
 else:
-    print("Found ", found, " at x: ", startX, " y: ", startY)
-    cv.rectangle(img2, (startX, startY), (endX, endY), (0, 0, 255), 2)
-    cv.imshow("Image", img2)
-    cv.waitKey(0)
+    print("Found ", foundA, " at x: ", startXa, " y: ", startYa)
+    cv.rectangle(img2, (startXa, startYa), (endXa, endYa), (0, 0, 255), 2)
+
+if foundD == "NO_DOOR":
+    print("No door found")
+else:
+    print("Found ", foundD, " at x: ", startXd, " y: ", startYd)
+    cv.rectangle(img2, (startXd, startYd), (endXd, endYd), (255, 0, 0), 2)
+
+cv.imshow("Image", img2)
+cv.waitKey(0)
 
 # cv.imshow('res',res)
 # k = cv.waitKey(0)
