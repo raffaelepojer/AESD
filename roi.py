@@ -11,6 +11,7 @@ def findRoi(img, original):
 
     # range of green in the dataset
     # use 60, ... in lower for stricter bound
+    # use 24, ... in lower for less strict bound
     lower_green = np.array([24,40,0])
     upper_green = np.array([95, 255,255])
 
@@ -22,10 +23,10 @@ def findRoi(img, original):
     masked = cv.bitwise_and(original, original, mask= mask)
 
 
-    edges = cv.Canny(masked, 100, 200)
+    edges = cv.Canny(masked, 50, 200)
 
 
-    contours, _ = cv.findContours(edges, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
+    contours, _ = cv.findContours(edges, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
 
     vis = original.copy()
     # hulls = [cv.convexHull(c) for c in contours]
