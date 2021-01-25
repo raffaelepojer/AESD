@@ -36,8 +36,15 @@ def findRoi(img, original):
         epsilon = 0.04*cv.arcLength(cnt,True)
         contours[i] = cv.approxPolyDP(cnt,epsilon,True)
     
+    hulls = [cv.convexHull(c) for c in contours]
+
     vis = original.copy()
     cv.drawContours(vis, contours, -1, (0,255,0), 1)
+    cv.imshow('test', vis)
+    cv.waitKey(0)
+
+    vis = original.copy()
+    cv.drawContours(vis, hulls, -1, (0,255,0), 1)
     cv.imshow('test', vis)
     cv.waitKey(0)
 
