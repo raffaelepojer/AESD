@@ -6,7 +6,7 @@ import os
 import roi
 
 
-img = cv.imread(os.path.join('dataset', 'image1.jpg'))
+img = cv.imread(os.path.join('dataset', 'image17.jpg'))
 
 
 # apply CLAHE only to the luminance channel in the LAB color space

@@ -22,26 +22,24 @@ def findRoi(img, original):
     # Bitwise-AND mask and original image
     masked = cv.bitwise_and(original, original, mask= mask)
 
+    # perform closing operation to try to find more closed contours
+    kernel = cv.getStructuringElement(cv.MORPH_RECT,(9,9))
+    masked = cv.morphologyEx(masked, cv.MORPH_CLOSE, kernel)
+
 
     edges = cv.Canny(masked, 50, 200)
-
-
     contours, _ = cv.findContours(edges, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
 
+
+    # approximate contours
+    for i, cnt in enumerate(contours):
+        epsilon = 0.04*cv.arcLength(cnt,True)
+        contours[i] = cv.approxPolyDP(cnt,epsilon,True)
+    
     vis = original.copy()
-    # hulls = [cv.convexHull(c) for c in contours]
     cv.drawContours(vis, contours, -1, (0,255,0), 1)
     cv.imshow('test', vis)
     cv.waitKey(0)
-
-
-    # for i, cnt in enumerate(contours):
-    #     epsilon = 0.001*cv.arcLength(cnt,True)
-    #     contours[i] = cv.approxPolyDP(cnt,epsilon,True)
-
-    # vis = original.copy()
-    # cv.drawContours(vis, contours, -1, (0,255,0), 1)
-    # imshow(vis)
 
 
     # use hulls to capture bad color-thresholded signs
