@@ -8,7 +8,7 @@ import detect as det
 # import imutils # keeps the aspect ratio
 
 
-img = cv.imread(os.path.join('dataset', 'image11.jpg'))
+img = cv.imread(os.path.join('dataset', 'image13.jpg'))
 
 
 # apply CLAHE only to the luminance channel in the LAB color space

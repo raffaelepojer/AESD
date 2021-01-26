@@ -20,10 +20,6 @@ def findRoi(img, original):
     mask = cv.inRange(hsv, lower_green, upper_green)
 
 
-    # cv.imshow('test', mask)
-    # cv.waitKey(0)
-
-
     # perform closing operation to try to find more closed contours
     kernel = cv.getStructuringElement(cv.MORPH_RECT,(4,4))
     mask = cv.morphologyEx(mask, cv.MORPH_CLOSE, kernel)
@@ -38,17 +34,16 @@ def findRoi(img, original):
         epsilon = 0.1*cv.arcLength(cnt,True)
         contours[i] = cv.approxPolyDP(cnt,epsilon,True)
     
+    # convexity correction
     contours = [cv.convexHull(c) for c in contours]
+
+    # filter by number of edges
     contours = [cnt for cnt in contours if len(cnt) == 4]
 
+    # filter by area
+    contours = [cnt for cnt in contours if cv.contourArea(cnt) >= 2000]
 
     vis = original.copy()
     cv.drawContours(vis, contours, -1, (0,255,0), 2)
     cv.imshow('test', vis)
     cv.waitKey(0)
-
-
-    # use hulls to capture bad color-thresholded signs
-    # use minimum enclosing box, which should work even if warped perspective
-    # filter by area, keep the biggest box?
-    # or filter by edges, searching for squares (4 edges)
