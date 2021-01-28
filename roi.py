@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def findRoi(img, original):
+def findRoi(img):
     # conversion to HSV
     hsv = cv.cvtColor(img, cv.COLOR_BGR2HSV)
 
@@ -21,7 +21,7 @@ def findRoi(img, original):
 
 
     # perform closing operation to try to find more closed contours
-    kernel = cv.getStructuringElement(cv.MORPH_RECT,(4,4))
+    kernel = cv.getStructuringElement(cv.MORPH_RECT,(15,15))
     mask = cv.morphologyEx(mask, cv.MORPH_CLOSE, kernel)
 
 
@@ -31,7 +31,7 @@ def findRoi(img, original):
 
     # approximate contours
     for i, cnt in enumerate(contours):
-        epsilon = 0.1*cv.arcLength(cnt,True)
+        epsilon = 0.08*cv.arcLength(cnt,True)
         contours[i] = cv.approxPolyDP(cnt,epsilon,True)
     
     # convexity correction
@@ -41,9 +41,9 @@ def findRoi(img, original):
     contours = [cnt for cnt in contours if len(cnt) == 4]
 
     # filter by area
-    contours = [cnt for cnt in contours if cv.contourArea(cnt) >= 2000]
+    contours = [cnt for cnt in contours if cv.contourArea(cnt) >= 5000]
 
-    vis = original.copy()
-    cv.drawContours(vis, contours, -1, (0,255,0), 2)
-    cv.imshow('test', vis)
-    cv.waitKey(0)
+    for cnt in contours:
+        print(cv.contourArea(cnt))
+
+    return contours

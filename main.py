@@ -8,7 +8,7 @@ import detect as det
 # import imutils # keeps the aspect ratio
 
 
-img = cv.imread(os.path.join('dataset', 'image13.jpg'))
+img = cv.imread(os.path.join('dataset', 'image32.jpg'))
 
 
 # apply CLAHE only to the luminance channel in the LAB color space
@@ -59,4 +59,9 @@ blur = cv.GaussianBlur(lab_clahe, (5,5), 0)
 
 # cv.imwrite('post1.jpg', blur)
 
-roi.findRoi(blur, img)
+contours = roi.findRoi(blur)
+
+vis = img.copy()
+cv.drawContours(vis, contours, -1, (0,255,0), 2)
+cv.imshow('test', vis)
+cv.waitKey(0)
