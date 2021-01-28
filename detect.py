@@ -1,7 +1,7 @@
 import cv2 as cv
 import numpy as np
 import os
-from matplotlib import pyplot as plt
+import matplotlib.pyplot as plt
 
 '''
     Return the coordinate for the bounding box
@@ -351,7 +351,7 @@ def findChairHom(target):
     img2 = target
 
     # Initiate SIFT detector
-    sift = cv.SIFT()
+    sift = cv.SIFT_create()
 
     # find the keypoints and descriptors with SIFT
     kp1, des1 = sift.detectAndCompute(img1,None)
@@ -394,4 +394,5 @@ def findChairHom(target):
 
     img3 = cv.drawMatches(img1,kp1,img2,kp2,good,None,**draw_params)
 
-    plt.imshow(img3, 'gray'),plt.show()
+    plt.imshow(img3, 'gray')
+    plt.show()
