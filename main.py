@@ -2,81 +2,72 @@
 
 import cv2 as cv
 import numpy as np
-import matplotlib.pyplot as plt
 import os
-
-def imshow(bgr_img, title = None):
-    # change color order, form bgr ot rgb
-    # so that matplotlib displays the image correctly
-    # this is required because OpenCV uses BGR by default
-    # while matplotlib uses RGB
-    plt.imshow(bgr_img[...,::-1])
-    
-    if title is not None:
-        plt.title(title)
-    
-    plt.axis('off')
+import roi
+import detect as det
+# import imutils # keeps the aspect ratio
 
 
-def histPlot(bgr_img, title = None):
-    # compute and plot histogram
-
-    color = ('b','g','r')
-
-    for i,col in enumerate(color):
-        histr = cv.calcHist([bgr_img],[i],None,[256],[0,256])
-        plt.plot(histr,color = col)
-        plt.xlim([0,256])
-    
-    if title is not None:
-        plt.title(title)
+img = cv.imread(os.path.join('dataset', 'image40.jpg'))
 
 
-img = cv.imread(os.path.join('dataset', 'raffaele', 'image16.jpg'))
+# apply CLAHE only to the luminance channel in the LAB color space
+# this way we increase contrast without impacting colors so much
 
+#  Converting image to LAB Color model
+lab= cv.cvtColor(img, cv.COLOR_BGR2LAB)
 
-# histogram equalization to improve contrast
-equ1 = np.zeros(img.shape, dtype=np.uint8)
+# Splitting the LAB image to different channels
+l, a, b = cv.split(lab)
 
-equ1[:,:,0] = cv.equalizeHist(img[:,:,0])
-equ1[:,:,1] = cv.equalizeHist(img[:,:,1])
-equ1[:,:,2] = cv.equalizeHist(img[:,:,2])
-    
-
-# adaptive histogram equalization using CLAHE algorithm
-equ2 = np.zeros(img.shape, dtype=np.uint8)
-
+# Applying CLAHE to L-channel
 clahe = cv.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
+cl = clahe.apply(l)
 
-equ2[:,:,0] = clahe.apply(img[:,:,0])
-equ2[:,:,1] = clahe.apply(img[:,:,1])
-equ2[:,:,2] = clahe.apply(img[:,:,2])
+# Merge the CLAHE enhanced L-channel with the a and b channel
+limg = cv.merge((cl,a,b))
 
+# Converting image from LAB Color model to RGB model
+lab_clahe = cv.cvtColor(limg, cv.COLOR_LAB2BGR)
 
-plot_dim = 210
-plt.subplot(plot_dim+1)
-imshow(img, 'Original image')
-plt.subplot(plot_dim+2)
-imshow(equ2, 'Adaptive histogram equalization')
-# plt.show()
+# blurring to reduce noise
+blur = cv.GaussianBlur(lab_clahe, (5,5), 0)
 
 
-# conversion to HSV
-hsv = cv.cvtColor(equ2, cv.COLOR_BGR2HSV)
+# img2 = cv.imread(os.path.join('dataset', 'template', 'image5-cropped.jpg'), cv.IMREAD_COLOR)
+# img_gray = cv.cvtColor(img2, cv.COLOR_BGR2GRAY)
+# imgcopy = img2.copy()
 
-# color thresholding
+# # draw the rectangle of the template found
+# arr = (startXa, startYa, endXa, endYa, foundA) = det.findArrow(img2)
+# door = (startXd, startYd, endXd, endYd, foundD) = det.findDoor(img2)
 
-# range of green in the dataset
-lower_green = np.array([34,23,0])
-upper_green = np.array([98, 255,160])
+# if foundA == "NO_ARROW":
+#     print("No arrow found")
+# else:
+#     print("Found ", foundA, " at x: ", startXa, " y: ", startYa)
+#     cv.rectangle(img2, (startXa, startYa), (endXa, endYa), (0, 0, 255), 2)
 
-# Threshold the HSV image
-mask = cv.inRange(hsv, lower_green, upper_green)
+# if foundD == "NO_DOOR":
+#     print("No door found")
+# else:
+#     print("Found ", foundD, " at x: ", startXd, " y: ", startYd)
+#     cv.rectangle(img2, (startXd, startYd), (endXd, endYd), (255, 0, 0), 2)
 
-# Bitwise-AND mask and original image
-res = cv.bitwise_and(img,img, mask= mask)
+# cv.imshow("Image", img2)
+# cv.waitKey(0)
 
+# cv.imwrite('post1.jpg', blur)
 
-cv.imshow('res',res)
-k = cv.waitKey(0)
-cv.destroyAllWindows()
+contours = roi.findRoi(blur)
+
+vis = img.copy()
+cv.drawContours(vis, contours, -1, (0,255,0), 2)
+cv.imshow('IMG', vis)
+# cv.waitKey(0)
+
+signs = roi.correctPerspective(contours, img)
+
+for s in signs:
+    cv.imshow('WARPED', s)
+    cv.waitKey(0)
