@@ -8,7 +8,7 @@ import detect as det
 # import imutils # keeps the aspect ratio
 
 
-img = cv.imread(os.path.join('dataset', 'image32.jpg'))
+img = cv.imread(os.path.join('dataset', 'image40.jpg'))
 
 
 # apply CLAHE only to the luminance channel in the LAB color space
@@ -30,7 +30,7 @@ limg = cv.merge((cl,a,b))
 # Converting image from LAB Color model to RGB model
 lab_clahe = cv.cvtColor(limg, cv.COLOR_LAB2BGR)
 
-
+# blurring to reduce noise
 blur = cv.GaussianBlur(lab_clahe, (5,5), 0)
 
 
@@ -63,5 +63,11 @@ contours = roi.findRoi(blur)
 
 vis = img.copy()
 cv.drawContours(vis, contours, -1, (0,255,0), 2)
-cv.imshow('test', vis)
-cv.waitKey(0)
+cv.imshow('IMG', vis)
+# cv.waitKey(0)
+
+signs = roi.correctPerspective(contours, img)
+
+for s in signs:
+    cv.imshow('WARPED', s)
+    cv.waitKey(0)
