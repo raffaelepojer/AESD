@@ -8,7 +8,7 @@ import detect as det
 # import imutils # keeps the aspect ratio
 
 
-img = cv.imread(os.path.join('dataset', 'image40.jpg'))
+img = cv.imread(os.path.join('dataset', 'image0.jpg'))
 
 
 # apply CLAHE only to the luminance channel in the LAB color space
@@ -33,32 +33,6 @@ lab_clahe = cv.cvtColor(limg, cv.COLOR_LAB2BGR)
 # blurring to reduce noise
 blur = cv.GaussianBlur(lab_clahe, (5,5), 0)
 
-
-# img2 = cv.imread(os.path.join('dataset', 'template', 'image5-cropped.jpg'), cv.IMREAD_COLOR)
-# img_gray = cv.cvtColor(img2, cv.COLOR_BGR2GRAY)
-# imgcopy = img2.copy()
-
-# # draw the rectangle of the template found
-# arr = (startXa, startYa, endXa, endYa, foundA) = det.findArrow(img2)
-# door = (startXd, startYd, endXd, endYd, foundD) = det.findDoor(img2)
-
-# if foundA == "NO_ARROW":
-#     print("No arrow found")
-# else:
-#     print("Found ", foundA, " at x: ", startXa, " y: ", startYa)
-#     cv.rectangle(img2, (startXa, startYa), (endXa, endYa), (0, 0, 255), 2)
-
-# if foundD == "NO_DOOR":
-#     print("No door found")
-# else:
-#     print("Found ", foundD, " at x: ", startXd, " y: ", startYd)
-#     cv.rectangle(img2, (startXd, startYd), (endXd, endYd), (255, 0, 0), 2)
-
-# cv.imshow("Image", img2)
-# cv.waitKey(0)
-
-# cv.imwrite('post1.jpg', blur)
-
 contours = roi.findRoi(blur)
 
 vis = img.copy()
@@ -68,6 +42,49 @@ cv.imshow('IMG', vis)
 
 signs = roi.correctPerspective(contours, img)
 
-for s in signs:
-    cv.imshow('WARPED', s)
-    cv.waitKey(0)
+# for s in signs:
+#     cv.imshow('WARPED', s)
+#     cv.waitKey(0)
+
+
+# img2 = cv.imread(os.path.join('dataset', 'template', 'image5-cropped.jpg'), cv.IMREAD_COLOR)
+# img_gray = cv.cvtColor(img2, cv.COLOR_BGR2GRAY)
+# imgcopy = img2.copy()
+# get the wrapped image
+signcopy = signs[0].copy()
+# draw the rectangle of the template found
+arr = (startXa, startYa, endXa, endYa, foundA) = det.findArrow(signcopy)
+door = (startXd, startYd, endXd, endYd, foundD) = det.findDoor(signcopy)
+chair = (startXc, startYc, endXc, endYc, foundC) = det.findChair(signcopy)
+man = (startXm, startYm, endXm, endYm, foundM) = det.findMan(signcopy)
+
+det.findChairHom(signcopy)
+
+if foundA == "NO_ARROW":
+    print("No arrow found")
+else:
+    print("Found ", foundA, " at x: ", startXa, " y: ", startYa)
+    cv.rectangle(signcopy, (startXa, startYa), (endXa, endYa), (0, 0, 255), 2)
+
+if foundD == "NO_DOOR":
+    print("No door found")
+else:
+    print("Found ", foundD, " at x: ", startXd, " y: ", startYd)
+    cv.rectangle(signcopy, (startXd, startYd), (endXd, endYd), (255, 0, 0), 2)
+
+if foundC == "NO_CHAIR":
+    print("No chair found")
+else:
+    print("Found ", foundC, " at x: ", startXc, " y: ", startYc)
+    cv.rectangle(signcopy, (startXc, startYc), (endXc, endYc), (255, 0, 255), 2)
+
+if foundM == "NO_MAN":
+    print("No man found")
+else:
+    print("Found ", foundM, " at x: ", startXm, " y: ", startYm)
+    cv.rectangle(signcopy, (startXm, startYm), (endXm, endYm), (0, 255, 255), 2)
+
+cv.imshow("Image", signcopy)
+cv.waitKey(0)
+
+cv.imwrite('sign0.jpg', signs[0])
