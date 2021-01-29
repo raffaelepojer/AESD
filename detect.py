@@ -272,6 +272,9 @@ def detectSing(target):
 
     template.append( (cv.imread(os.path.join('dataset', 'template', 'right.jpg'), cv.IMREAD_COLOR), "RIGHT SIGN" ) )
     template.append( (cv.imread(os.path.join('dataset', 'template', 'left.jpg'), cv.IMREAD_COLOR), "LEFT SIGN" ) )
+
+    template.append( (cv.imread(os.path.join('dataset', 'template', 'right-disable.jpg'), cv.IMREAD_COLOR), "RIGHT DISABLE SIGN" ) )
+    template.append( (cv.imread(os.path.join('dataset', 'template', 'left-disable.jpg'), cv.IMREAD_COLOR), "LEFT DISABLE SIGN" ) )
     
     template.append( (cv.imread(os.path.join('dataset', 'template', 'right-door-template-small.jpg'), cv.IMREAD_COLOR), "DOOR RIGHT" ) )
     template.append( (cv.imread(os.path.join('dataset', 'template', 'left-door-template-small.jpg'), cv.IMREAD_COLOR), "DOOR LEFT" ) )
@@ -328,7 +331,7 @@ def detectSing(target):
 
             # store the numbers of point detected, so if the find two opposite sign we can keep the higher
             detected[index] = len(good)
-            
+
             print("Found %d points: %s" % (len(good),temp[1]))
         else:
             print ("Not enough matches are found - %d/%d: NO %s" % (len(good),MIN_MATCH_COUNT,temp[1]))
