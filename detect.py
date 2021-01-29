@@ -269,6 +269,9 @@ def detectSing(target):
     template.append( (cv.imread(os.path.join('dataset', 'template', 'right-arrow-small.png'), cv.IMREAD_COLOR), "ARROW RIGHT" ) )
     template.append( (cv.imread(os.path.join('dataset', 'template', 'left-arrow-small.png'), cv.IMREAD_COLOR), "ARROW LEFT" ) )
     template.append( (cv.imread(os.path.join('dataset', 'template', 'down-arrow-small.png'), cv.IMREAD_COLOR), "ARROW DOWN" ) )
+
+    template.append( (cv.imread(os.path.join('dataset', 'template', 'right.jpg'), cv.IMREAD_COLOR), "RIGHT SIGN" ) )
+    template.append( (cv.imread(os.path.join('dataset', 'template', 'left.jpg'), cv.IMREAD_COLOR), "LEFT SIGN" ) )
     
     template.append( (cv.imread(os.path.join('dataset', 'template', 'right-door-template-small.jpg'), cv.IMREAD_COLOR), "DOOR RIGHT" ) )
     template.append( (cv.imread(os.path.join('dataset', 'template', 'left-door-template-small.jpg'), cv.IMREAD_COLOR), "DOOR LEFT" ) )
@@ -322,7 +325,10 @@ def detectSing(target):
             dst = cv.perspectiveTransform(pts,M)
 
             img2 = cv.polylines(img2,[np.int32(dst)],True,255,3, cv.LINE_AA)
-            detected[index] += 1
+
+            # store the numbers of point detected, so if the find two opposite sign we can keep the higher
+            detected[index] = len(good)
+            
             print("Found %d points: %s" % (len(good),temp[1]))
         else:
             print ("Not enough matches are found - %d/%d: NO %s" % (len(good),MIN_MATCH_COUNT,temp[1]))
@@ -341,7 +347,7 @@ def detectSing(target):
         # plt.show()
         cv.waitKey(0)
 
-    # return a list containing the number of detected object found
+    # return a list containing the detected object found, 0 not found
     # each sign corresponds to a particular index in the list
     # see the template list to see which index each sign corresponds to
     return detected

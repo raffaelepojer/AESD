@@ -6,7 +6,7 @@ import os
 import roi
 import detect as det
 
-img = cv.imread(os.path.join('dataset', 'image34.jpg'))
+img = cv.imread(os.path.join('dataset', 'image20.jpg'))
 
 # apply CLAHE only to the luminance channel in the LAB color space
 # this way we increase contrast without impacting colors so much
