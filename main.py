@@ -5,8 +5,10 @@ import numpy as np
 import os
 import roi
 import detect as det
+import linecache
 
-img = cv.imread(os.path.join('dataset', 'image0.jpg'))
+img = cv.imread(os.path.join('dataset', 'image30.jpg'))
+# label = linecache.getline('label.txt', 10).strip()
 
 # apply CLAHE only to the luminance channel in the LAB color space
 # this way we increase contrast without impacting colors so much
@@ -46,6 +48,18 @@ signs = roi.correctPerspective(contours, img)
 for s in signs:
     found = det.detectSing(s)
     print(found)
+    max = 0
+    detected = ""
+    direction = -1
+    for x in found:
+        if x != 0 and x[0] > max:
+            max = x[0]
+            detected = x[1]
+            direction = x[2]
+    if max == 0:
+        print("No sign detected")
+    else:
+        print("Found", detected)
 
 # img2 = cv.imread(os.path.join('dataset', 'template', 'image5-cropped.jpg'), cv.IMREAD_COLOR)
 # img_gray = cv.cvtColor(img2, cv.COLOR_BGR2GRAY)

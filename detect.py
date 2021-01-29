@@ -261,33 +261,44 @@ def findMan(target):
 def detectSing(target):
     # list containing the tuple (template, NAME)
     template = []
+    # 0 = right
+    # 1 = left
+    # 2 = down
+    # 3 = nothing
 
     # index goes from 0 to 10 (to update)
-    template.append( (cv.imread(os.path.join('dataset', 'template', 'chair-right.jpg'), cv.IMREAD_COLOR), "CHAIR RIGHT") )
-    template.append(  (cv.imread(os.path.join('dataset', 'template', 'chair-left.jpg'), cv.IMREAD_COLOR), "CHARI LEFT") )
+    # template.append( (cv.imread(os.path.join('dataset', 'template', 'chair-right.jpg'), 0), "CHAIR RIGHT", 0 ) )
+    # template.append(  (cv.imread(os.path.join('dataset', 'template', 'chair-left.jpg'), 0), "CHARI LEFT", 1 ) )
 
-    template.append( (cv.imread(os.path.join('dataset', 'template', 'right-arrow-small.png'), cv.IMREAD_COLOR), "ARROW RIGHT" ) )
-    template.append( (cv.imread(os.path.join('dataset', 'template', 'left-arrow-small.png'), cv.IMREAD_COLOR), "ARROW LEFT" ) )
-    template.append( (cv.imread(os.path.join('dataset', 'template', 'down-arrow-small.png'), cv.IMREAD_COLOR), "ARROW DOWN" ) )
+    # template.append( (cv.imread(os.path.join('dataset', 'template', 'right-arrow-small.png'), 0), "ARROW RIGHT", 0 ) )
+    # template.append( (cv.imread(os.path.join('dataset', 'template', 'left-arrow-small.png'), 0), "ARROW LEFT", 1 ) )
+    template.append( (cv.imread(os.path.join('dataset', 'template', 'down-arrow-small.png'), 0), "ARROW DOWN", 2 ) )
 
-    template.append( (cv.imread(os.path.join('dataset', 'template', 'right.jpg'), cv.IMREAD_COLOR), "RIGHT SIGN" ) )
-    template.append( (cv.imread(os.path.join('dataset', 'template', 'left.jpg'), cv.IMREAD_COLOR), "LEFT SIGN" ) )
+    template.append( (cv.imread(os.path.join('dataset', 'template', 'right.jpg'), 0), "RIGHT SIGN", 0 ) )
+    template.append( (cv.imread(os.path.join('dataset', 'template', 'left.jpg'), 0), "LEFT SIGN", 1 ) )
 
-    template.append( (cv.imread(os.path.join('dataset', 'template', 'right-disable.jpg'), cv.IMREAD_COLOR), "RIGHT DISABLE SIGN" ) )
-    template.append( (cv.imread(os.path.join('dataset', 'template', 'left-disable.jpg'), cv.IMREAD_COLOR), "LEFT DISABLE SIGN" ) )
+    template.append( (cv.imread(os.path.join('dataset', 'template', 'right-disable.jpg'), 0), "RIGHT DISABLE SIGN", 0 ) )
+    template.append( (cv.imread(os.path.join('dataset', 'template', 'left-disable.jpg'), 0), "LEFT DISABLE SIGN", 1 ) )
     
-    template.append( (cv.imread(os.path.join('dataset', 'template', 'right-door-template-small.jpg'), cv.IMREAD_COLOR), "DOOR RIGHT" ) )
-    template.append( (cv.imread(os.path.join('dataset', 'template', 'left-door-template-small.jpg'), cv.IMREAD_COLOR), "DOOR LEFT" ) )
+    # template.append( (cv.imread(os.path.join('dataset', 'template', 'right-door-template-small.jpg'), 0), "DOOR RIGHT", 0 ) )
+    # template.append( (cv.imread(os.path.join('dataset', 'template', 'left-door-template-small.jpg'), 0), "DOOR LEFT", 1 ) )
 
-    template.append( (cv.imread(os.path.join('dataset', 'template', 'manrun-right.jpg'), cv.IMREAD_COLOR), "MAN RIGHT" ) )
-    template.append( (cv.imread(os.path.join('dataset', 'template', 'manrun-left.jpg'), cv.IMREAD_COLOR), "MAN LEFT" ) )
+    # template.append( (cv.imread(os.path.join('dataset', 'template', 'manrun-right.jpg'), 0), "MAN RIGHT", 0 ) )
+    # template.append( (cv.imread(os.path.join('dataset', 'template', 'manrun-left.jpg'), 0), "MAN LEFT", 1 ) )
 
-    template.append( (cv.imread(os.path.join('dataset', 'template', 'door-down.png'), cv.IMREAD_COLOR), "DOWN DOOR" ) )
+    template.append( (cv.imread(os.path.join('dataset', 'template', 'right-stairs.jpg'), 0), "RIGHT STAIRS", 0 ) )
+    template.append( (cv.imread(os.path.join('dataset', 'template', 'left-stairs.jpg'), 0), "LEFT STAIRS", 1 ) )
 
-    template.append( (cv.imread(os.path.join('dataset', 'template', 'calm.png'), cv.IMREAD_COLOR), "CALM" ) )
+    template.append( (cv.imread(os.path.join('dataset', 'template', 'door-down.png'), 0), "DOWN DOOR", 2) )
 
-    MIN_MATCH_COUNT = 12 # hyperparameter to set, if there are less than this number of points the image is not detected 
+    template.append( (cv.imread(os.path.join('dataset', 'template', 'calm.png'), 0), "CALM", 3 ) )
+
+    # to display the match and print the number
+    DEBUG = False
+    # hyperparameter to set, if there are less than this number of points the image is not detected 
+    MIN_MATCH_COUNT = 12
     img2 = target
+    # img2 = cv.cvtColor(img2, cv.COLOR_BGR2GRAY)
     index = 0
     # initialize detect list (nella maniera più smarza che esista, la mia conoscenza di python si riassume in queste 3 righe)
     detected = []
@@ -298,6 +309,7 @@ def detectSing(target):
         # Initiate SIFT detector
         sift = cv.SIFT_create()
 
+        # image8bit = cv.cvtColor(temp[0], cv.COLOR_BGR2GRAY)
         # find the keypoints and descriptors with SIFT
         kp1, des1 = sift.detectAndCompute(temp[0],None)
         kp2, des2 = sift.detectAndCompute(img2,None)
@@ -313,7 +325,7 @@ def detectSing(target):
         # store all the good matches as per Lowe's ratio test.
         good = []
         for m,n in matches:
-            if m.distance < 0.7*n.distance:
+            if m.distance < 0.6*n.distance:
                 good.append(m)
 
         if len(good)>MIN_MATCH_COUNT:
@@ -327,28 +339,30 @@ def detectSing(target):
             pts = np.float32([ [0,0],[0,h-1],[w-1,h-1],[w-1,0] ]).reshape(-1,1,2)
             dst = cv.perspectiveTransform(pts,M)
 
-            img2 = cv.polylines(img2,[np.int32(dst)],True,255,3, cv.LINE_AA)
+            if DEBUG:
+                img2 = cv.polylines(img2,[np.int32(dst)],True,255,3, cv.LINE_AA)
+                print("Found %d points: %s" % (len(good),temp[1]))
 
             # store the numbers of point detected, so if the find two opposite sign we can keep the higher
-            detected[index] = len(good)
-
-            print("Found %d points: %s" % (len(good),temp[1]))
+            # (# of points, LABEL, direction)
+            detected[index] = (len(good), temp[1], temp[2])
         else:
-            print ("Not enough matches are found - %d/%d: NO %s" % (len(good),MIN_MATCH_COUNT,temp[1]))
+            if DEBUG:
+                print ("Not enough matches are found - %d/%d: NO %s" % (len(good),MIN_MATCH_COUNT,temp[1]))
+
             matchesMask = None
-        
-        draw_params = dict(matchColor = (0,255,0), # draw matches in green color
-                    singlePointColor = None,
-                    matchesMask = matchesMask, # draw only inliers
-                    flags = 2)
 
         index += 1
 
-        img3 = cv.drawMatches(temp[0],kp1,img2,kp2,good,None,**draw_params)
-
-        cv.imshow('gray', img3)
-        # plt.show()
-        cv.waitKey(0)
+        if DEBUG:
+            draw_params = dict(matchColor = (0,255,0), # draw matches in green color
+                        singlePointColor = None,
+                        matchesMask = matchesMask, # draw only inliers
+                        flags = 2)
+            img3 = cv.drawMatches(temp[0],kp1,img2,kp2,good,None,**draw_params)
+            cv.imshow('gray', img3)
+            # plt.show()
+            cv.waitKey(0)
 
     # return a list containing the detected object found, 0 not found
     # each sign corresponds to a particular index in the list
