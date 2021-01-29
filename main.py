@@ -5,11 +5,8 @@ import numpy as np
 import os
 import roi
 import detect as det
-# import imutils # keeps the aspect ratio
-
 
 img = cv.imread(os.path.join('dataset', 'image34.jpg'))
-
 
 # apply CLAHE only to the luminance channel in the LAB color space
 # this way we increase contrast without impacting colors so much
@@ -49,10 +46,6 @@ signs = roi.correctPerspective(contours, img)
 for s in signs:
     found = det.detectSing(s)
     print(found)
-
-# signcopy = signs[0].copy()
-# found = det.findChairHom(signcopy)
-# print(found)
 
 # img2 = cv.imread(os.path.join('dataset', 'template', 'image5-cropped.jpg'), cv.IMREAD_COLOR)
 # img_gray = cv.cvtColor(img2, cv.COLOR_BGR2GRAY)

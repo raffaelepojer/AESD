@@ -280,10 +280,10 @@ def detectSing(target):
 
     template.append( (cv.imread(os.path.join('dataset', 'template', 'calm.png'), cv.IMREAD_COLOR), "CALM" ) )
 
-    MIN_MATCH_COUNT = 12 # hyperparameter to set
+    MIN_MATCH_COUNT = 12 # hyperparameter to set, if there are less than this number of points the image is not detected 
     img2 = target
     index = 0
-    # initialize detect list 
+    # initialize detect list (nella maniera più smarza che esista, la mia conoscenza di python si riassume in queste 3 righe)
     detected = []
     for i in template:
         detected.append(0)
