@@ -8,7 +8,7 @@ import detect as det
 import linecache
 
 
-for i in [18,20]:
+for i in [35]:
 
     print('Image ' + str(i))
 

@@ -303,6 +303,8 @@ def detectSign(target):
     img2 = target
     # img2 = cv.cvtColor(img2, cv.COLOR_BGR2GRAY)
     index = 0
+    # knn
+    K = 2
     # initialize detect list (nella maniera più smarza che esista, la mia conoscenza di python si riassume in queste 3 righe)
     detected = []
     for i in template:
@@ -322,6 +324,11 @@ def detectSign(target):
             print('No descriptor found for the sign')
             return detected
 
+        # terminate if there are not enough keypoints for knn
+        if len(kp2) < K:
+            print('Not enough keypoints')
+            return detected
+
 
         FLANN_INDEX_KDTREE = 0
         index_params = dict(algorithm = FLANN_INDEX_KDTREE, trees = 5)
@@ -329,7 +336,7 @@ def detectSign(target):
 
         flann = cv.FlannBasedMatcher(index_params, search_params)
 
-        matches = flann.knnMatch(des1,des2,k=2)
+        matches = flann.knnMatch(des1,des2,k=K)
 
         # store all the good matches as per Lowe's ratio test.
         good = []
