@@ -274,8 +274,8 @@ def detectSing(target):
     # template.append( (cv.imread(os.path.join('dataset', 'template', 'left-arrow-small.png'), 0), "ARROW LEFT", 1 ) )
     template.append( (cv.imread(os.path.join('dataset', 'template', 'down-arrow-small.png'), 0), "ARROW DOWN", 2 ) )
 
-    template.append( (cv.imread(os.path.join('dataset', 'template', 'right.jpg'), 0), "RIGHT SIGN", 0 ) )
-    template.append( (cv.imread(os.path.join('dataset', 'template', 'left.jpg'), 0), "LEFT SIGN", 1 ) )
+    template.append( (cv.imread(os.path.join('dataset', 'template', 'right2.jpg'), 0), "RIGHT SIGN", 0 ) )
+    template.append( (cv.imread(os.path.join('dataset', 'template', 'left2.jpg'), 0), "LEFT SIGN", 1 ) )
 
     template.append( (cv.imread(os.path.join('dataset', 'template', 'right-disable.jpg'), 0), "RIGHT DISABLE SIGN", 0 ) )
     template.append( (cv.imread(os.path.join('dataset', 'template', 'left-disable.jpg'), 0), "LEFT DISABLE SIGN", 1 ) )
@@ -289,12 +289,15 @@ def detectSing(target):
     template.append( (cv.imread(os.path.join('dataset', 'template', 'right-stairs.jpg'), 0), "RIGHT STAIRS", 0 ) )
     template.append( (cv.imread(os.path.join('dataset', 'template', 'left-stairs.jpg'), 0), "LEFT STAIRS", 1 ) )
 
+    template.append( (cv.imread(os.path.join('dataset', 'template', 'right-emergency.jpg'), 0), "RIGHT EMERGENCY", 0 ) )
+    template.append( (cv.imread(os.path.join('dataset', 'template', 'left-emergency.jpg'), 0), "LEFT EMERGENCY", 1 ) )
+
     template.append( (cv.imread(os.path.join('dataset', 'template', 'door-down.png'), 0), "DOWN DOOR", 2) )
 
     template.append( (cv.imread(os.path.join('dataset', 'template', 'calm.png'), 0), "CALM", 3 ) )
 
     # to display the match and print the number
-    DEBUG = False
+    DEBUG = True
     # hyperparameter to set, if there are less than this number of points the image is not detected 
     MIN_MATCH_COUNT = 12
     img2 = target
