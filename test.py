@@ -8,7 +8,7 @@ import detect as det
 import linecache
 
 
-for i in range(8, 9):
+for i in [18,20]:
 
     print('Image ' + str(i))
 
@@ -47,8 +47,8 @@ for i in range(8, 9):
     signs = roi.correctPerspective(contours, img)
 
     for s in signs:
-        cv.imshow('SIGN', s)
-        cv.waitKey(0)
+        # cv.imshow('SIGN', s)
+        # cv.waitKey(0)
 
         found = det.detectSign(s)
         # print(found)

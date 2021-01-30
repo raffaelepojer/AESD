@@ -317,7 +317,7 @@ def detectSign(target):
         kp1, des1 = sift.detectAndCompute(temp[0],None)
         kp2, des2 = sift.detectAndCompute(img2,None)
 
-
+        # terminate if it is not possible to compute a descriptor for the image
         if des2 is None:
             print('No descriptor found for the sign')
             return detected
@@ -342,15 +342,21 @@ def detectSign(target):
             dst_pts = np.float32([ kp2[m.trainIdx].pt for m in good ]).reshape(-1,1,2)
 
             M, mask = cv.findHomography(src_pts, dst_pts, cv.RANSAC,5.0)
-            matchesMask = mask.ravel().tolist()
 
-            h,w = temp[0].shape[:2]
-            pts = np.float32([ [0,0],[0,h-1],[w-1,h-1],[w-1,0] ]).reshape(-1,1,2)
-            dst = cv.perspectiveTransform(pts,M)
+            # check if a homography can be computed
+            if M is not None:
+                matchesMask = mask.ravel().tolist()
 
-            if DEBUG:
-                img2 = cv.polylines(img2,[np.int32(dst)],True,255,3, cv.LINE_AA)
-                print("Found %d points: %s" % (len(good),temp[1]))
+                h,w = temp[0].shape[:2]
+                pts = np.float32([ [0,0],[0,h-1],[w-1,h-1],[w-1,0] ]).reshape(-1,1,2)
+
+                dst = cv.perspectiveTransform(pts,M)
+
+                if DEBUG:
+                    img2 = cv.polylines(img2,[np.int32(dst)],True,255,3, cv.LINE_AA)
+                    print("Found %d points: %s" % (len(good),temp[1]))
+            else:
+                print('Cannot compute homography')
 
             # store the numbers of point detected, so if the find two opposite sign we can keep the higher
             # (# of points, LABEL, direction)
