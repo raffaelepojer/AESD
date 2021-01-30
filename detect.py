@@ -345,25 +345,25 @@ def detectSign(target):
                 good.append(m)
 
         if len(good)>MIN_MATCH_COUNT:
-            src_pts = np.float32([ kp1[m.queryIdx].pt for m in good ]).reshape(-1,1,2)
-            dst_pts = np.float32([ kp2[m.trainIdx].pt for m in good ]).reshape(-1,1,2)
+            if DEBUG:
+                src_pts = np.float32([ kp1[m.queryIdx].pt for m in good ]).reshape(-1,1,2)
+                dst_pts = np.float32([ kp2[m.trainIdx].pt for m in good ]).reshape(-1,1,2)
 
-            M, mask = cv.findHomography(src_pts, dst_pts, cv.RANSAC,5.0)
+                M, mask = cv.findHomography(src_pts, dst_pts, cv.RANSAC,5.0)
 
-            # check if a homography can be computed
-            if M is not None:
-                matchesMask = mask.ravel().tolist()
+                # check if a homography can be computed
+                if M is not None:
+                    matchesMask = mask.ravel().tolist()
 
-                h,w = temp[0].shape[:2]
-                pts = np.float32([ [0,0],[0,h-1],[w-1,h-1],[w-1,0] ]).reshape(-1,1,2)
+                    h,w = temp[0].shape[:2]
+                    pts = np.float32([ [0,0],[0,h-1],[w-1,h-1],[w-1,0] ]).reshape(-1,1,2)
 
-                dst = cv.perspectiveTransform(pts,M)
+                    dst = cv.perspectiveTransform(pts,M)
 
-                if DEBUG:
                     img2 = cv.polylines(img2,[np.int32(dst)],True,255,3, cv.LINE_AA)
                     print("Found %d points: %s" % (len(good),temp[1]))
-            else:
-                print('Cannot compute homography')
+                else:
+                    print('Cannot compute homography')
 
             # store the numbers of point detected, so if the find two opposite sign we can keep the higher
             # (# of points, LABEL, direction)

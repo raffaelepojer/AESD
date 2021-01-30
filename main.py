@@ -7,7 +7,7 @@ import roi
 import detect as det
 import linecache
 
-img = cv.imread(os.path.join('dataset', 'image0.jpg'))
+img = cv.imread(os.path.join('dataset', 'image26.jpg'))
 # label = linecache.getline('label.txt', 10).strip()
 
 # apply CLAHE only to the luminance channel in the LAB color space
