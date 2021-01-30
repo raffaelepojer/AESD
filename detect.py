@@ -297,7 +297,7 @@ def detectSing(target):
     template.append( (cv.imread(os.path.join('dataset', 'template', 'calm.png'), 0), "CALM", 3 ) )
 
     # to display the match and print the number
-    DEBUG = True
+    DEBUG = False
     # hyperparameter to set, if there are less than this number of points the image is not detected 
     MIN_MATCH_COUNT = 12
     img2 = target
