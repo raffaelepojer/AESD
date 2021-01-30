@@ -7,7 +7,7 @@ import roi
 import detect as det
 import linecache
 
-img = cv.imread(os.path.join('dataset', 'image4.jpg'))
+img = cv.imread(os.path.join('dataset', 'image0.jpg'))
 # label = linecache.getline('label.txt', 10).strip()
 
 # apply CLAHE only to the luminance channel in the LAB color space
@@ -34,10 +34,10 @@ blur = cv.GaussianBlur(lab_clahe, (5,5), 0)
 
 contours = roi.findRoi(blur)
 
-vis = img.copy()
-cv.drawContours(vis, contours, -1, (0,255,0), 2)
-cv.imshow('IMG', vis)
-# cv.waitKey(0)
+# vis = img.copy()
+# cv.drawContours(vis, contours, -1, (0,255,0), 2)
+# cv.imshow('IMG', vis)
+# # cv.waitKey(0)
 
 signs = roi.correctPerspective(contours, img)
 
@@ -46,7 +46,7 @@ signs = roi.correctPerspective(contours, img)
 #     cv.waitKey(0)
 
 for s in signs:
-    found = det.detectSing(s)
+    found = det.detectSign(s)
     print(found)
     max = 0
     detected = ""

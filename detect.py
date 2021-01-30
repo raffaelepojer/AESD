@@ -258,7 +258,7 @@ def findMan(target):
         print("No chair found")
         return (0, 0, 0, 0, "NO_MAN")
 
-def detectSing(target):
+def detectSign(target):
     # list containing the tuple (template, NAME)
     template = []
     # 0 = right
@@ -316,6 +316,12 @@ def detectSing(target):
         # find the keypoints and descriptors with SIFT
         kp1, des1 = sift.detectAndCompute(temp[0],None)
         kp2, des2 = sift.detectAndCompute(img2,None)
+
+
+        if des2 is None:
+            print('No descriptor found for the sign')
+            return detected
+
 
         FLANN_INDEX_KDTREE = 0
         index_params = dict(algorithm = FLANN_INDEX_KDTREE, trees = 5)
