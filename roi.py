@@ -3,6 +3,32 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
+def preprocess(img):
+    # apply CLAHE only to the luminance channel in the LAB color space
+    # this way we increase contrast without impacting colors so much
+
+    #  Converting image to LAB Color model
+    lab= cv.cvtColor(img, cv.COLOR_BGR2LAB)
+
+    # Splitting the LAB image to different channels
+    l, a, b = cv.split(lab)
+
+    # Applying CLAHE to L-channel
+    clahe = cv.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
+    cl = clahe.apply(l)
+
+    # Merge the CLAHE enhanced L-channel with the a and b channel
+    limg = cv.merge((cl,a,b))
+
+    # Converting image from LAB Color model to RGB model
+    lab_clahe = cv.cvtColor(limg, cv.COLOR_LAB2BGR)
+
+    # blurring to reduce noise
+    blur = cv.GaussianBlur(lab_clahe, (5,5), 0)
+
+    return blur
+
+
 def findRoi(img):
     # conversion to HSV
     hsv = cv.cvtColor(img, cv.COLOR_BGR2HSV)
@@ -10,8 +36,6 @@ def findRoi(img):
     # color thresholding
 
     # range of green in the dataset
-    # use 60, ... in lower for stricter bound
-    # use 24, ... in lower for less strict bound
     lower_green = np.array([60,40,0])
     upper_green = np.array([95, 255,255])
 
@@ -47,21 +71,19 @@ def findRoi(img):
 
 
 def order_points(pts):
-    # initialzie a list of coordinates that will be ordered
-    # such that the first entry in the list is the top-left,
-    # the second entry is the top-right, the third is the
-    # bottom-right, and the fourth is the bottom-left
+    # list of coordinates orderd as:
+    # top-lef, top-right, bottom-right, bottom-left
     rect = np.zeros((4, 2), dtype = "float32")
 
-    # the top-left point will have the smallest sum, whereas
+    # the top-left point will have the smallest sum
     # the bottom-right point will have the largest sum
     s = pts.sum(axis = 1)
     rect[0] = pts[np.argmin(s)]
     rect[2] = pts[np.argmax(s)]
 
-    # now, compute the difference between the points, the
-    # top-right point will have the smallest difference,
-    # whereas the bottom-left will have the largest difference
+    # compute the difference between the points
+    # top-right point will have the smallest difference
+    # bottom-left will have the largest difference
     diff = np.diff(pts, axis = 1)
     rect[1] = pts[np.argmin(diff)]
     rect[3] = pts[np.argmax(diff)]
@@ -79,30 +101,25 @@ def correctPerspective(contours, img):
         
         # rect = tl, tr, br, bl
         rect = order_points(pts)
-
         (tl, tr, br, bl) = rect
 
         # compute destination dimensions
 
-        # compute the width of the new image, which will be the
+        # compute width of the warped image
         # maximum distance between bottom-right and bottom-left
         # x-coordiates or the top-right and top-left x-coordinates
         widthA = np.sqrt(((br[0] - bl[0]) ** 2) + ((br[1] - bl[1]) ** 2))
         widthB = np.sqrt(((tr[0] - tl[0]) ** 2) + ((tr[1] - tl[1]) ** 2))
         maxWidth = max(int(widthA), int(widthB))
 
-        # compute the height of the new image, which will be the
+        # compute height of the warped image
         # maximum distance between the top-right and bottom-right
         # y-coordinates or the top-left and bottom-left y-coordinates
         heightA = np.sqrt(((tr[0] - br[0]) ** 2) + ((tr[1] - br[1]) ** 2))
         heightB = np.sqrt(((tl[0] - bl[0]) ** 2) + ((tl[1] - bl[1]) ** 2))
         maxHeight = max(int(heightA), int(heightB))
 
-        # now that we have the dimensions of the new image, construct
-        # the set of destination points to obtain a "birds eye view",
-        # (i.e. top-down view) of the image, again specifying points
-        # in the top-left, top-right, bottom-right, and bottom-left
-        # order
+        # compute destination box coordinates
         dst = np.array([
             [0, 0],
             [maxWidth - 1, 0],
@@ -115,10 +132,5 @@ def correctPerspective(contours, img):
         warped = cv.warpPerspective(img, M, (maxWidth, maxHeight))
 
         signs.append(warped)
-
-        # cv.circle(img,tuple(rect[0]),5,[255,0,0],-1)
-        # cv.circle(img,tuple(rect[1]),5,[0,255,0],-1)
-        # cv.circle(img,tuple(rect[2]),5,[0,0,255],-1)
-        # cv.circle(img,tuple(rect[3]),5,[255,0,255],-1)
 
     return signs
