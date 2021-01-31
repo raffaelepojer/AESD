@@ -5,69 +5,51 @@ import numpy as np
 import os
 import roi
 import detect as det
-# import imutils # keeps the aspect ratio
 
 
-img = cv.imread(os.path.join('dataset', 'image40.jpg'))
+img = cv.imread(os.path.join('dataset', 'image34.jpg'))
 
+# pre-process the image to increase contrast and reduce noise
+pre = roi.preprocess(img)
 
-# apply CLAHE only to the luminance channel in the LAB color space
-# this way we increase contrast without impacting colors so much
+# find contours of candidate signs
+contours = roi.findRoi(pre)
 
-#  Converting image to LAB Color model
-lab= cv.cvtColor(img, cv.COLOR_BGR2LAB)
-
-# Splitting the LAB image to different channels
-l, a, b = cv.split(lab)
-
-# Applying CLAHE to L-channel
-clahe = cv.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
-cl = clahe.apply(l)
-
-# Merge the CLAHE enhanced L-channel with the a and b channel
-limg = cv.merge((cl,a,b))
-
-# Converting image from LAB Color model to RGB model
-lab_clahe = cv.cvtColor(limg, cv.COLOR_LAB2BGR)
-
-# blurring to reduce noise
-blur = cv.GaussianBlur(lab_clahe, (5,5), 0)
-
-
-# img2 = cv.imread(os.path.join('dataset', 'template', 'image5-cropped.jpg'), cv.IMREAD_COLOR)
-# img_gray = cv.cvtColor(img2, cv.COLOR_BGR2GRAY)
-# imgcopy = img2.copy()
-
-# # draw the rectangle of the template found
-# arr = (startXa, startYa, endXa, endYa, foundA) = det.findArrow(img2)
-# door = (startXd, startYd, endXd, endYd, foundD) = det.findDoor(img2)
-
-# if foundA == "NO_ARROW":
-#     print("No arrow found")
-# else:
-#     print("Found ", foundA, " at x: ", startXa, " y: ", startYa)
-#     cv.rectangle(img2, (startXa, startYa), (endXa, endYa), (0, 0, 255), 2)
-
-# if foundD == "NO_DOOR":
-#     print("No door found")
-# else:
-#     print("Found ", foundD, " at x: ", startXd, " y: ", startYd)
-#     cv.rectangle(img2, (startXd, startYd), (endXd, endYd), (255, 0, 0), 2)
-
-# cv.imshow("Image", img2)
-# cv.waitKey(0)
-
-# cv.imwrite('post1.jpg', blur)
-
-contours = roi.findRoi(blur)
-
-vis = img.copy()
-cv.drawContours(vis, contours, -1, (0,255,0), 2)
-cv.imshow('IMG', vis)
-# cv.waitKey(0)
-
-signs = roi.correctPerspective(contours, img)
-
-for s in signs:
-    cv.imshow('WARPED', s)
+if len(contours) == 0:
+    print('No sign detected')
+else:
+    # visualize contours
+    vis = img.copy()
+    cv.drawContours(vis, contours, -1, (0,255,0), 2)
+    cv.imshow('IMG', vis)
     cv.waitKey(0)
+    cv.destroyAllWindows()
+
+    # perspective correction
+    signs = roi.correctPerspective(contours, img)
+
+    print('Detecting signs')
+
+    # identify signs keeping the best match
+    for s in signs:
+        found = det.detectSign(s)
+        max = 0
+        detected = ""
+        direction = -1
+        for x in found:
+            if x != 0 and x[0] > max:
+                max = x[0]
+                detected = x[1]
+                direction = x[2]
+        if max == 0:
+            print("No sign detected")
+            detected = 'No sign detected'
+        else:
+            print("Found", detected)
+        
+        cv.imshow(detected, s)
+
+    print('Done')
+    cv.waitKey(0)
+    cv.destroyAllWindows()
+
