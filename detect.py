@@ -84,6 +84,7 @@ def detectSign(target):
         (cv.imread(os.path.join('dataset', 'template', 'down-arrow-small.png'), 0), "ARROW DOWN", 2 ),
         (cv.imread(os.path.join('dataset', 'template', 'right.jpg'), 0), "RIGHT SIGN", 0 ) ,
         (cv.imread(os.path.join('dataset', 'template', 'left.jpg'), 0), "LEFT SIGN", 1 ),
+        (cv.imread(os.path.join('dataset', 'template', 'down.png'), 0), "DOWN SIGN", 1 ),
         (cv.imread(os.path.join('dataset', 'template', 'right-hand.jpg'), 0), "RIGHT HANDICAPPED SIGN", 0 ),
         (cv.imread(os.path.join('dataset', 'template', 'left-hand.jpg'), 0), "LEFT HANDICAPPED SIGN", 1 ),
         (cv.imread(os.path.join('dataset', 'template', 'right-stairs.jpg'), 0), "RIGHT STAIRS", 0 ),
@@ -129,7 +130,7 @@ def detectSign(target):
             return detected
 
         # flann matcher and its parameters
-        FLANN_INDEX_KDTREE = 0
+        FLANN_INDEX_KDTREE = 1
         index_params = dict(algorithm = FLANN_INDEX_KDTREE, trees = 5)
         search_params = dict(checks = 50)
 

@@ -7,7 +7,7 @@ import roi
 import detect as det
 
 
-img = cv.imread(os.path.join('dataset', 'image34.jpg'))
+img = cv.imread(os.path.join('dataset', 'image11.jpg'))
 
 # pre-process the image to increase contrast and reduce noise
 pre = roi.preprocess(img)
